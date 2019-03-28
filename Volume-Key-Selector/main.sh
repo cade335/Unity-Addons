@@ -1,12 +1,12 @@
 # External Tools
 
-chmod -R 0755 $INSTALLER/addon/Volume-Key-Selector/tools
-cp -R $INSTALLER/addon/Volume-Key-Selector/tools $INSTALLER/common/unityfiles 2>/dev/null
+chmod -R 0755 $TMPDIR/addon/Volume-Key-Selector/tools
+cp -R $TMPDIR/addon/Volume-Key-Selector/tools $UF 2>/dev/null
 
 keytest() {
   ui_print "- Vol Key Test -"
   ui_print "  Press a Vol Key"
-  (/system/bin/getevent -lc 1 2>&1 | /system/bin/grep VOLUME | /system/bin/grep " DOWN" > $INSTALLER/events) || return 1
+  (/system/bin/getevent -lc 1 2>&1 | /system/bin/grep VOLUME | /system/bin/grep " DOWN" > $TMPDIR/events) || return 1
   return 0
 }
 
@@ -14,12 +14,12 @@ chooseport() {
   # Original idea by chainfire @xda-developers, improved on by ianmacd @xda-developers
   #note from chainfire @xda-developers: getevent behaves weird when piped, and busybox grep likes that even less than toolbox/toybox grep
   while true; do
-    /system/bin/getevent -lc 1 2>&1 | /system/bin/grep VOLUME | /system/bin/grep " DOWN" > $INSTALLER/events
-    if (`cat $INSTALLER/events 2>/dev/null | /system/bin/grep VOLUME >/dev/null`); then
+    /system/bin/getevent -lc 1 2>&1 | /system/bin/grep VOLUME | /system/bin/grep " DOWN" > $TMPDIR/events
+    if (`cat $TMPDIR/events 2>/dev/null | /system/bin/grep VOLUME >/dev/null`); then
       break
     fi
   done
-  if (`cat $INSTALLER/events 2>/dev/null | /system/bin/grep VOLUMEUP >/dev/null`); then
+  if (`cat $TMPDIR/events 2>/dev/null | /system/bin/grep VOLUMEUP >/dev/null`); then
     return 0
   else
     return 1

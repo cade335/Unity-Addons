@@ -13,14 +13,14 @@
 #   Please rename the .sh to the APK name you want to work on.
 
 # working directory variables
-ap=$INSTALLER/addon/APK-Patcher;
+ap=$TMPDIR/addon/APK-Patcher;
 patch=$ap/patch;
 script=$ap/script;
 
 # set up extracted files and directories
 rm -f $patch/placeholder $script/placeholder
 chmod -R 755 $ap/$ARCH32/tools $script $ap/*.sh;
-cp -R $ap/tools $INSTALLER/common/unityfiles 2>/dev/null
+cp -R $ap/tools $UF 2>/dev/null
 
 ui_print " ";
 ui_print "- Running APK Patcher Lite by djb77 @ xda-developers-";

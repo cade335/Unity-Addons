@@ -1,5 +1,5 @@
 # External Tools
 
-chmod -R 0755 $INSTALLER/addon/External-Tools
-cp -R $INSTALLER/addon/External-Tools/tools $INSTALLER/common/unityfiles 2>/dev/null
-[ -d "$INSTALLER/common/unityfiles/tools/other" ] && PATH=$INSTALLER/common/unityfiles/tools/other:$PATH
+chmod -R 0755 $TMPDIR/addon/External-Tools
+cp -R $TMPDIR/addon/External-Tools/tools $UF 2>/dev/null
+[ -d "$UF/tools/other" ] && PATH=$UF/tools/other:$PATH

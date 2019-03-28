@@ -24,7 +24,7 @@ if [ ! "$(grep "#$MODID-UnityIndicator" /init.rc 2>/dev/null)" ]; then
     done < $INFO
     rm -f $INFO
   fi
-  $MAGISK && rm -rf $MOUNTPATH/$MODID
+  $MAGISK && rm -rf $MODULEROOT/$MODID
   # CUSTOM USER SCRIPT
   rm -f $0
   mount -o ro,remount /system

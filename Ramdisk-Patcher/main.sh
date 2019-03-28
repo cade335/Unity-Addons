@@ -1,7 +1,7 @@
 # Ramdisk-Patcher
 
 # Functions
-flash_boot_image() {
+flash_image() {
   # Make sure all blocks are writable
   magisk --unlock-blocks 2>/dev/null
   case "$1" in
@@ -10,15 +10,15 @@ flash_boot_image() {
   esac
   if [ -b "$2" ]; then
     local BLOCK=true
-    local s_size=`stat -c '%s' "$1"`
-    local t_size=`blockdev --getsize64 "$2"`
-    [ $s_size -gt $t_size ] && return 1
+    local img_sz=`stat -c '%s' "$1"`
+    local blk_sz=`blockdev --getsize64 "$2"`
+    [ $img_sz -gt $blk_sz ] && return 1
   else
     local BLOCK=false
   fi
   if $BOOTSIGNED; then
     ui_print "- Signing boot image"
-    eval $COMMAND | $BOOTSIGNER /boot $1 $INSTALLER/common/unityfiles/tools/avb/verity.pk8 $INSTALLER/common/unityfiles/tools/avb/verity.x509.pem boot-new-signed.img
+    eval $COMMAND | $BOOTSIGNER /boot $1 $UF/tools/avb/verity.pk8 $UF/tools/avb/verity.x509.pem boot-new-signed.img
     ui_print "- Flashing new boot image"
     $BLOCK && dd if=/dev/zero of="$2" 2>/dev/null
     dd if=boot-new-signed.img of="$2"
@@ -32,14 +32,14 @@ flash_boot_image() {
   return 0
 }
 unpack_ramdisk() {
-  local PATHDIR BOOTDIR=$INSTALLER/common/unityfiles/boot
-  cp -af $INSTALLER/common/unityfiles/tools/chromeos $BOOTDIR
+  local PATHDIR BOOTDIR=$UF/boot
+  cp -af $UF/tools/chromeos $BOOTDIR
   chmod -R 0755 $BOOTDIR
   find_boot_image
   ui_print " "
   [ -z $BOOTIMAGE ] && abort "   ! Unable to detect target image !"
   ui_print "   Checking boot image signature..."
-  BOOTSIGNER="/system/bin/dalvikvm -Xbootclasspath:/system/framework/core-oj.jar:/system/framework/core-libart.jar:/system/framework/conscrypt.jar:/system/framework/bouncycastle.jar -Xnodex2oat -Xnoimage-dex2oat -cp $INSTALLER/common/unityfiles/tools/avb/BootSignature_Android.jar com.android.verity.BootSignature"
+  BOOTSIGNER="/system/bin/dalvikvm -Xbootclasspath:/system/framework/core-oj.jar:/system/framework/core-libart.jar:/system/framework/conscrypt.jar:/system/framework/bouncycastle.jar -Xnodex2oat -Xnoimage-dex2oat -cp $UF/tools/avb/BootSignature_Android.jar com.android.verity.BootSignature"
   RAMDISK=true; BOOTSIGNED=false; CHROMEOS=false
   mkdir -p $RD
   cd $BOOTDIR
@@ -82,9 +82,9 @@ if ! $MAGISK; then
   find_boot_image() {
     BOOTIMAGE=
     if [ ! -z $SLOT ]; then
-      BOOTIMAGE=`find_block boot$SLOT ramdisk$SLOT`
+      BOOTIMAGE=`find_block ramdisk$SLOT recovery_ramdisk$SLOT boot$SLOT`
     else
-      BOOTIMAGE=`find_block boot ramdisk boot_a kern-a android_boot kernel lnx bootimg`
+      BOOTIMAGE=`find_block ramdisk recovery_ramdisk boot boot_a kern-a android_boot kernel lnx bootimg`
     fi
     if [ -z $BOOTIMAGE ]; then
       # Lets see what fstabs tells me
@@ -104,6 +104,8 @@ if ! $MAGISK; then
   }
 fi
 
-chmod -R 0755 $INSTALLER/addon/Ramdisk-Patcher
-cp -R $INSTALLER/addon/Ramdisk-Patcher/tools $INSTALLER/common/unityfiles 2>/dev/null
-cp -f $INSTALLER/common/unityfiles/tools/$ARCH32/magiskinit $INSTALLER/common/unityfiles/tools/$ARCH32/magiskpolicy
+api_check -n 17
+$IS64BIT && mv -f $TMPDIR/addon/Ramdisk-Patcher/tools/$ARCH32/magiskinit64 $TMPDIR/addon/Ramdisk-Patcher/tools/$ARCH32/magiskinit
+chmod -R 0755 $TMPDIR/addon/Ramdisk-Patcher
+cp -R $TMPDIR/addon/Ramdisk-Patcher/tools $UF 2>/dev/null
+cp -f $UF/tools/$ARCH32/magiskinit $UF/tools/$ARCH32/magiskpolicy
