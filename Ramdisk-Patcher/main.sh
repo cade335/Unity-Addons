@@ -54,6 +54,15 @@ unpack_ramdisk() {
     1 ) ui_print "   ! Unable to unpack boot image !"; abort "   ! Aborting !";;
     2 ) ui_print "   ChromeOS boot image detected"; CHROMEOS=true;;
   esac
+  # Test patch status
+  ui_print "- Checking ramdisk status"
+  if [ -e ramdisk.cpio ]; then
+    magiskboot cpio ramdisk.cpio test
+    STATUS=$?
+  else
+    # Stock A only system-as-root
+    STATUS=0
+  fi
   cd ramdisk
   magiskboot cpio ../ramdisk.cpio "extract"
   cd /
@@ -65,14 +74,13 @@ repack_ramdisk() {
   find . | cpio -H newc -o > ../ramdisk.cpio
   cd ..
   ui_print "- Repacking boot image"
+  if [ $((STATUS & 4)) -ne 0 ]; then
+    ui_print "- Compressing ramdisk"
+    magiskboot cpio ramdisk.cpio compress
+  fi
   magiskboot repack "$BOOTIMAGE" || abort "! Unable to repack boot image!"
   $CHROMEOS && sign_chromeos
-  if ! flash_image new-boot.img "$BOOTIMAGE"; then
-    ui_print "- Compressing ramdisk to fit in partition"
-    magiskboot cpio ramdisk.cpio compress
-    magiskboot repack "$BOOTIMAGE"
-    flash_image new-boot.img "$BOOTIMAGE" || abort "! Insufficient partition size"
-  fi
+  flash_image new-boot.img "$BOOTIMAGE" || abort "! Insufficient partition size"
   magiskboot cleanup
   rm -f new-boot.img
   cd /
