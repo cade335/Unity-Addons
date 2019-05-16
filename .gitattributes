@@ -5,4 +5,4 @@
 *.xml text eol=lf
 
 # Denote all files that are truly binary and should not be modified.
-* binary
+*/tools/** binary
