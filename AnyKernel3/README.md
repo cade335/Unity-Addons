@@ -27,7 +27,9 @@ OG_AK=false;
 
 `slot_select=active|inactive` may be added to allow specifying the target slot. If omitted the default remains `active`.
 
-`OG_AK=true|false` set to true for OG AK (no ramdisk patching - ramdisk is never unpacked/repacked)
+`OG_AK=true|false` set to true for OG AK (no ramdisk patching - ramdisk is never unpacked/repacked). Note that this needs to be set to false if using Direct Sepolicy patching since sepolicy is found in the ramdisk
+
+`SYSTEM_ROOT_RD=true|false` set to true if SYSTEM_ROOT device detected with ramdisk in /system (all non-A/B devices with Android Pie+ have this setup along with possibly others)
 
 ## // Important Notes ##
 

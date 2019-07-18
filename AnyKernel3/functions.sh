@@ -198,7 +198,5 @@ done
 write_boot
 recovery_cleanup
 rm -rf $TMPDIR
-# Swap the slot back for other scripts (like magisk) - still needed?
-if [ ! -z $SLOT ]; then [ $SLOT = _a ] && SLOT=_b || SLOT=_a; fi
 ui_print "   Done!"
 exit 0
