@@ -2,14 +2,15 @@ if $MAGISK; then
   ui_print "   Note that to remove any ramdisk changes,"
   ui_print "   you will need to flash this zip again"
   ui_print " "
-  ui_print "   Removing mod in magisk manager won't remove ramdisk changes"
+  ui_print "   Removing mod in magisk manager won't remove"
+  ui_print "   ramdisk changes"
   sleep 2
 fi
 
 rm -f $TMPDIR/addon/AnyKernel3/ramdisk/placeholder
 
 # Only run if needed
-if ! $DIRSEPOL && [ ! "$(ls -A $TMPDIR/addon/AnyKernel3/ramdisk 2/dev/null)" ] && [ ! "$(ls -A $TMPDIR/addon/AnyKernel3/patch 2/dev/null)" ] && [ ! "$(sed -n '/^chown -R root:root $ramdisk\/\*\;$/,$p' anykernel.sh | sed '1d;/^#/d;/^$/d')" ]; then
+if ! $DIRSEPOL && [ ! "$(ls -A $TMPDIR/addon/AnyKernel3/ramdisk 2>/dev/null)" ] && [ ! "$(ls -A $TMPDIR/addon/AnyKernel3/patch 2>/dev/null)" ] && [ ! "$(sed -n '/^# Add your custom install logic here - do not remove this line$/,$p' anykernel.sh | sed '1d;/^#/d;/^$/d')" ]; then
   rm -rf $TMPDIR/addon/AnyKernel3
   exit 0
 fi
@@ -66,7 +67,7 @@ if ! $OG_AK && ! $SYSTEM_ROOT_RD; then
     [ "$(ls -A $TMPDIR/addon/AnyKernel3/rdtmp 2>/dev/null)" ] && cp_ch -rn $TMPDIR/addon/AnyKernel3/rdtmp /system/addon.d/$MODID-unityakfiles
     [ "$(ls -A $TMPDIR/addon/AnyKernel3/patch 2>/dev/null)" ] && cp_ch -rn $TMPDIR/addon/AnyKernel3/patch /system/addon.d/$MODID-unityakfiles
     # Place mod script
-    [ "$(sed -n '/^chown -R root:root $ramdisk\/\*\;$/,$p' anykernel.sh | sed '1d;/^#/d;/^$/d')" ] && sed -i "1i #!/system/bin/sh\nMODID=$MODID" $TMPDIR/addon/AnyKernel3/anykernel.sh || echo -e "#!/system/bin/sh\nMODID=$MODID" > $TMPDIR/addon/AnyKernel3/anykernel.sh
+    [ "$(sed -n '/^# Add your custom install logic here - do not remove this line$/,$p' anykernel.sh | sed '1d;/^#/d;/^$/d')" ] && sed -i "1i #!/system/bin/sh\nMODID=$MODID" $TMPDIR/addon/AnyKernel3/anykernel.sh || echo -e "#!/system/bin/sh\nMODID=$MODID" > $TMPDIR/addon/AnyKernel3/anykernel.sh
     [ -f "$TMPDIR/addon/AnyKernel3/sepolicy.sh" ] && sed -i "2r $TMPDIR/addon/AnyKernel3/sepolicy.sh" $TMPDIR/addon/AnyKernel3/anykernel.sh
     [ "$(tail -1 "$TMPDIR/addon/AnyKernel3/anykernel.sh")" ] && echo "" >> $TMPDIR/addon/AnyKernel3/anykernel.sh
     cp_ch -n $TMPDIR/addon/AnyKernel3/anykernel.sh /system/addon.d/$MODID-unityak 0755

@@ -4,7 +4,7 @@
 # set up working directory variables
 home=$TMPDIR/addon/AnyKernel3;
 bootimg=$home/boot.img;
-bin=$home/tools;
+bin=$UF/tools/$ARCH32;
 patch=$home/patch;
 ramdisk=$home/ramdisk;
 split_img=$home/split_img;
