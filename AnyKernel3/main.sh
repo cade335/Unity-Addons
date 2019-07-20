@@ -15,6 +15,9 @@ elif [ ! "$(getprop ro.product.device 2>/dev/null)" -a ! "$(getprop ro.build.pro
   }
 fi;
 
+mv -f $TMPDIR/addon/AnyKernel3/uninstall.sh $TMPDIR/addon/AnyKernel3/custom_uninstall.sh
+mv -f $TMPDIR/addon/AnyKernel3/scripts/* $TMPDIR/addon/AnyKernel3/
+
 for i in $(sed -n '/^# shell variables/,/^$/p' $TMPDIR/addon/AnyKernel3/anykernel.sh | sed '1d;$d'); do
   eval $i
   sed -i "s|$i|#$i|" $TMPDIR/addon/AnyKernel3/anykernel.sh
