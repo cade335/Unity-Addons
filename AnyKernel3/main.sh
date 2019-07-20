@@ -1,4 +1,5 @@
-chmod -R 0755 $TMPDIR/addon/AnyKernel3
+chmod -R 0755 $TMPDIR/addon/AnyKernel3/tools
+mv -f $TMPDIR/addon/AnyKernel3/avb $TMPDIR/addon/AnyKernel3/chromeos $TMPDIR/addon/AnyKernel3/BootSignature_Android.jar $TMPDIR/addon/AnyKernel3/futility $TMPDIR/addon/AnyKernel3/$ARCH32
 cp -R $TMPDIR/addon/AnyKernel3/tools $UF 2>/dev/null
 
 ui_print " " "AnyKernel3 by osm0sis @ xda-developers" " " " ";
