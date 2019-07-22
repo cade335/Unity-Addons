@@ -15,7 +15,6 @@ if ! $DIRSEPOL && [ ! "$(ls -A $TMPDIR/addon/AnyKernel3/ramdisk 2>/dev/null)" ] 
   exit 0
 fi
 
-$SYSTEM_ROOT_RD && RD=/system
 # Remove ramdisk mod if exists
 if [ "$(grep "#$MODID-UnityIndicator" $RD/init.rc 2>/dev/null)" ]; then
   ui_print " "
@@ -50,14 +49,14 @@ if $DIRSEPOL && [ -s $TMPDIR/common/sepolicy.sh ]; then
   . $TMPDIR/addon/AnyKernel3/sepolicy.sh
 fi
 
-if ! $OG_AK && $SYSTEM_ROOT_RD && [ -d "$ramdisk" ]; then
+if ! $OG_AK && [ "$RD" == "/system" ] && [ -d "$ramdisk" ]; then
   $MAGISK && ! $SYSOVER && mount -o rw,remount /system
   cp_ch -r $ramdisk $RD
   $MAGISK && ! $SYSOVER && mount -o ro,remount /system
 fi
 
 # Use addon.d if available, else add script to remove mod from system/magisk in event mod is only removed from ramdisk (like dirty flashing)
-if ! $OG_AK && ! $SYSTEM_ROOT_RD; then
+if ! $OG_AK && [ "$RD" != "/system" ]; then
   if [ -d /system/addon.d ]; then
     $MAGISK && ! $SYSOVER && mount -o rw,remount /system
     # Copy needed binaries
@@ -83,4 +82,3 @@ if ! $OG_AK && ! $SYSTEM_ROOT_RD; then
     install_script -p $TMPDIR/addon/AnyKernel3/$MODID-ramdisk.sh
   fi
 fi
-RD=$TMPDIR/addon/AnyKernel3/ramdisk

@@ -111,7 +111,7 @@ unpack_ramdisk() {
   if [ -f ramdisk.cpio ]; then
     comp=$($bin/magiskboot decompress ramdisk.cpio 2>&1 | grep -v 'raw' | sed -n 's;.*\[\(.*\)\];\1;p');
   elif $SYSTEM_ROOT; then
-    SYSTEM_ROOT_RD=true;
+    RD=/system;
     cd $ramdisk;
     return 0;
   else

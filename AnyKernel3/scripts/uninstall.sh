@@ -1,6 +1,6 @@
-if ! $OG_AK && ! $SYSTEM_ROOT_RD; then
+if ! $OG_AK && [ "$RD" != "/system" ]; then
   uninstall_files $INFORD; sed -i "/#$MODID-UnityIndicator/d" $RD/init.rc
-elif ! $OG_AK && $SYSTEM_ROOT_RD; then
+elif ! $OG_AK && [ "$RD" == "/system" ]; then
   sed -i "/#$MODID-UnityIndicator/d" /system/init.rc
 fi
 if ! $OG_AK && $DIRSEPOL || [ -f /system/addon.d/$MODID-unityrd ]; then

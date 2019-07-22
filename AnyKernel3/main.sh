@@ -24,6 +24,5 @@ for i in $(sed -n '/^# shell variables/,/^$/p' $TMPDIR/addon/AnyKernel3/anykerne
   sed -i "s|$i|#$i|" $TMPDIR/addon/AnyKernel3/anykernel.sh
 done
 [ -z $OG_AK ] && OG_AK=false
-SYSTEM_ROOT_RD=false
 . $TMPDIR/addon/AnyKernel3/ak3-core.sh
 $OG_AK && split_boot || dump_boot
