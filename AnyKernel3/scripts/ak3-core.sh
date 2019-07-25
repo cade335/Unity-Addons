@@ -563,6 +563,7 @@ reset_ak() {
       test -e $i && cp -af $i $current;
     done;
   fi;
+  test -d $split_img && rm -rf $ramdisk;
   rm -rf $bootimg $ramdisk $split_img $home/*-new* $home/*-files/current;
 
   if [ "$1" == "keep" ]; then
